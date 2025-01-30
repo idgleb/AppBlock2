@@ -16,13 +16,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Process
 import android.provider.Settings
-import android.util.Log
-import android.view.accessibility.AccessibilityManager
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
+import com.ursolgleb.appblocker.databinding.ActivityMainBinding
+
 
 class MainActivity : AppCompatActivity() {
-
+    private lateinit var bindActivityMain: ActivityMainBinding
     private lateinit var devicePolicyManager: DevicePolicyManager
     private lateinit var compName: ComponentName
 
@@ -30,68 +30,82 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //scheduleRestartService(this)
-
         devicePolicyManager = getSystemService(Context.DEVICE_POLICY_SERVICE) as DevicePolicyManager
         compName = ComponentName(this, DeviceAdminReceiver::class.java)
 
-        val enableAdminButton: Button = findViewById(R.id.enable_admin_button)
-        enableAdminButton.setOnClickListener {
+        initUI()
+        initListeners()
+        initServises()
+    }
+
+    private fun initServises() {
+        //scheduleRestartService(this)
+
+        // Iniciar el servicio en segundo plano
+        val serviceAppUsageIntent = Intent(this, AppUsageService::class.java)
+        startService(serviceAppUsageIntent)
+    }
+
+    private fun initUI() {
+        bindActivityMain = ActivityMainBinding.inflate(layoutInflater)
+    }
+
+    private fun initListeners() {
+        bindActivityMain.enableAdminButton.setOnClickListener {
             if (devicePolicyManager.isAdminActive(compName)) {
-                Toast.makeText(this, "Permisos de administrador ya habilitados.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Permisos de administrador ya habilitados.",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 solicitarPermisoAdmin(this)
             }
 
         }
 
-        val openAutoStartSettingsButton: Button = findViewById(R.id.openAutoStartSettingsButton)
-        openAutoStartSettingsButton.setOnClickListener {
+        bindActivityMain.openAutoStartSettingsButton.setOnClickListener {
             openAutoStartSettings(this)
         }
 
-        val accesoDeUsoButton: Button = findViewById(R.id.accesoDeUsoButton)
-        accesoDeUsoButton.setOnClickListener {
+        bindActivityMain.accesoDeUsoButton.setOnClickListener {
             if (!isUsageAccessGranted(this)) {
                 solicitarPermisoAccesoUso(this)
             }
         }
 
-        val canDrawOverlaysButton: Button = findViewById(R.id.canDrawOverlaysButton)
-        canDrawOverlaysButton.setOnClickListener {
+        bindActivityMain.canDrawOverlaysButton.setOnClickListener {
             if (!Settings.canDrawOverlays(this)) {
                 solisitarPermisoSuperponerVentanas(this)
             }
         }
 
-        val requestIgnoreBatteryOptimizationsButton: Button = findViewById(R.id.requestIgnoreBatteryOptimizationsButton)
-        requestIgnoreBatteryOptimizationsButton.setOnClickListener {
+
+        bindActivityMain.requestIgnoreBatteryOptimizationsButton.setOnClickListener {
             requestIgnoreBatteryOptimizations(this)
         }
 
-        val openManufacturerSettingsButton: Button = findViewById(R.id.openManufacturerSettingsButton)
-        openManufacturerSettingsButton.setOnClickListener {
+        bindActivityMain.openManufacturerSettingsButton.setOnClickListener {
             openManufacturerSettings(this)
         }
 
-        val requestAccessibilityPermissionButton: Button = findViewById(R.id.requestAccessibilityPermissionButton)
-        requestAccessibilityPermissionButton.setOnClickListener {
+        bindActivityMain.requestAccessibilityPermissionButton.setOnClickListener {
             //
         }
-
-        // Iniciar el servicio en segundo plano
-        val serviceAppUsageIntent = Intent(this, AppUsageService::class.java)
-        startService(serviceAppUsageIntent)
 
     }
 
     private fun solicitarPermisoAdmin(context: Context) {
         if (devicePolicyManager.isAdminActive(compName)) {
-            Toast.makeText(this, "Permisos de administrador ya habilitados.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Permisos de administrador ya habilitados.", Toast.LENGTH_SHORT)
+                .show()
         } else {
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
                 putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName)
-                putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Necesitamos permisos de administrador.")
+                putExtra(
+                    DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                    "Necesitamos permisos de administrador."
+                )
             }
             context.startActivity(intent)
         }
@@ -157,10 +171,10 @@ class MainActivity : AppCompatActivity() {
     fun openAppSettings(context: Context) {
         val intent = Intent(
             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.parse("package:" + context.packageName))
+            Uri.parse("package:" + context.packageName)
+        )
         context.startActivity(intent)
     }
-
 
 
     fun openManufacturerSettings(context: Context) {
@@ -176,6 +190,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 manufacturer.equals("huawei", ignoreCase = true) -> {
                     intent.setComponent(
                         android.content.ComponentName(
@@ -184,6 +199,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 manufacturer.equals("oppo", ignoreCase = true) -> {
                     intent.setComponent(
                         android.content.ComponentName(
@@ -192,6 +208,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 manufacturer.equals("vivo", ignoreCase = true) -> {
                     intent.setComponent(
                         android.content.ComponentName(
@@ -200,6 +217,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 manufacturer.equals("samsung", ignoreCase = true) -> {
                     intent.setComponent(
                         android.content.ComponentName(
@@ -208,6 +226,7 @@ class MainActivity : AppCompatActivity() {
                         )
                     )
                 }
+
                 else -> {
                     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     intent.data = Uri.parse("package:" + context.packageName)
@@ -254,8 +273,6 @@ class MainActivity : AppCompatActivity() {
         val jobScheduler = context.getSystemService(JobScheduler::class.java)
         jobScheduler.schedule(jobInfo)
     }
-
-
 
 
 }
