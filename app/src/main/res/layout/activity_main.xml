@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/openAutoStartSettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="openAutoStartSettings!"
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/enable_admin_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="enable_admin_button..."
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/accesoDeUsoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="accesoDeUsoButton..."
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/canDrawOverlaysButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="canDrawOverlaysButton..."
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/requestIgnoreBatteryOptimizationsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="requestIgnoreBatteryOptimizations"
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/openManufacturerSettingsButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="openManufacturerSettings"
+        android:textSize="22sp"/>
+
+    <Button
+        android:id="@+id/requestAccessibilityPermissionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="requestAccessibilityPermission"
+        android:textSize="22sp"/>
+
+</LinearLayout>
